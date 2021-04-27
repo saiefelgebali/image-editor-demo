@@ -1,65 +1,52 @@
-// Control how much zoom is allowed
-// Higher value means lower zoom range
-const ZOOM_DENOMINATOR = 200;
+function drawImage(state) {
+	if (!state || !state.image) {
+		return;
+	}
 
-export function handleCanvasImageLoad(image, canvas, ctx, { width, height }) {
-	// Setup maximum dimensions
-	const maxWidth = width;
-	const maxHeight = height;
+	state.ctx.drawImage(
+		state.image.original,
+		state.image.x,
+		state.image.y,
+		state.image.width,
+		state.image.height
+	);
+}
 
+export function handleCanvasImageLoad(state) {
 	// Resize image so it is equal to the canvas width (maxWidth)
 	// and retain original aspect ratio
-	const { targetWidth, targetHeight } = clipImageDimensions(image, maxWidth);
+	const { targetWidth, targetHeight } = clipImageDimensions(
+		state.image.original,
+		state.maxWidth
+	);
 
 	// Resize canvas height to match new image height
 	// Ensure canvas does not exceed a maximum height
-	canvas.height = targetHeight > maxHeight ? maxHeight : targetHeight;
+	canvas.height =
+		targetHeight > state.maxHeight ? state.maxHeight : targetHeight;
 
-	// Image position
-	const targetX = 0,
-		targetY = 0;
+	// Update image state
+	state.image.x = state.image.y = 0;
+	state.image.width = targetWidth;
+	state.image.height = targetHeight;
 
-	ctx.drawImage(image, targetX, targetY, targetWidth, targetHeight);
-
-	// Return image dimensions
-	return {
-		x: targetX,
-		y: targetY,
-		width: targetWidth,
-		height: targetHeight,
-	};
+	drawImage(state);
 }
 
-export function handleCanvasImageZoom(image, canvas, ctx, current, zoom) {
-	// Clip zoom range
-	zoom = zoom / ZOOM_DENOMINATOR;
+export function handleCanvasImageZoom(state) {
+	// Resize image depending on zoom value
+	const targetWidth = state.zoom * state.maxWidth + state.maxWidth;
 
-	// Resize image
-	const { targetWidth, targetHeight } = clipImageDimensions(
-		image,
-		image.width * zoom + canvas.width
+	const { targetHeight } = clipImageDimensions(
+		state.image.original,
+		targetWidth
 	);
-	ctx.drawImage(image, current.x, current.y, targetWidth, targetHeight);
 
-	// Return new image dimensions
-	current.width = targetWidth;
-	current.height = targetHeight;
-	return current;
-}
+	// Alter image dimensions
+	state.image.width = targetWidth;
+	state.image.height = targetHeight;
 
-export function handleMoveImage(image, canvas, ctx, current, offset) {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	const targetX = current.x + offset.x;
-	const targetY = current.y + offset.y;
-
-	ctx.drawImage(image, targetX, targetY, current.width, current.height);
-
-	return {
-		x: targetX,
-		y: targetY,
-		width: current.width,
-		height: current.height,
-	};
+	drawImage(state);
 }
 
 function clipImageDimensions(image, targetWidth) {
