@@ -24,6 +24,9 @@ function handleZoomImage(state) {
 	// Access slider DOM element
 	const slider = document.getElementById("slider");
 
+	// Ensure slider on value 0
+	slider.value = 0;
+
 	// Handle zoom on input
 	slider.addEventListener("input", (event) => {
 		const zoom = event.target.value / zoomRange;
