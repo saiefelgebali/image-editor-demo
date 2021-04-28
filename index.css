@@ -13,6 +13,7 @@
 
 body {
     background-color: #f2f2f2;
+    user-select: none;
 }
 
 #main {
@@ -23,6 +24,12 @@ body {
     align-items: center;
 }
 
+#image-editor {
+    display: flex;
+    flex-direction: column;
+}
+
 #canvas {
+    cursor: move;
     background-color: white;
 }
