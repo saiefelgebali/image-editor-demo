@@ -4,6 +4,9 @@ export default class ImageEditor {
 	// Image editor can only handle one canvas
 	canvas;
 
+	// 4:3 standard max aspect ratio
+	maxAspectRatio = 4 / 3;
+
 	// Context for Canvas API - type CanvasRenderingContext2D
 	ctx;
 
@@ -16,6 +19,7 @@ export default class ImageEditor {
 		posY: 0,
 		width: 0,
 		height: 0,
+		aspectRatio: 0,
 	};
 
 	constructor(canvas) {
@@ -52,19 +56,26 @@ export default class ImageEditor {
 		// Resize image to fit on canvas
 		this.image.posX = 0;
 		this.image.posY = 0;
-		const targetWidth = this.canvas.width;
-		this.resizeImage(targetWidth);
-		this.canvas.height = this.image.height;
+		this.resizeImage(this.canvas.width);
+
+		// Handle canvas height - clip it to keep it within max aspect ratio
+		if (1 / this.image.aspectRatio > this.maxAspectRatio) {
+			this.canvas.height = this.canvas.width * this.maxAspectRatio;
+		} else {
+			this.canvas.height = this.image.height;
+		}
+
 		this.drawImage();
 	}
 
 	resizeImage(targetWidth) {
 		if (!this.image.source) return;
 		// Resize image height to preserve aspect ratio
-		const percentChange = targetWidth / this.image.source.width;
+		this.image.aspectRatio =
+			this.image.source.width / this.image.source.height;
 
 		this.image.width = targetWidth;
-		this.image.height = this.image.source.height * percentChange;
+		this.image.height = targetWidth / this.image.aspectRatio;
 	}
 
 	zoomImage(zoom) {

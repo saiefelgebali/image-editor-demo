@@ -40,11 +40,9 @@ export function handleTouchMoveImage(target, container, editor) {
 		isTouching = true;
 		originX = event.touches[0].screenX;
 		originY = event.touches[0].screenY;
-		console.log(originX, originY);
 	});
 
 	container.addEventListener("touchmove", (event) => {
-		event.preventDefault();
 		if (!isTouching) return;
 		offsetX = event.touches[0].screenX - originX;
 		offsetY = event.touches[0].screenY - originY;
