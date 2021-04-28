@@ -12,3 +12,4 @@ This is a demo for an image editing solution on the web
 
 Here is a video to demonstrate the basic funtionality of this app
 
+![result](https://user-images.githubusercontent.com/77067634/116468938-684f6c00-a869-11eb-995e-1f7d5a6038a2.gif)
