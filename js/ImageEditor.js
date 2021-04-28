@@ -1,4 +1,4 @@
-import { handleMouseMoveImage } from "./control.js";
+import { handleMouseMoveImage, handleTouchMoveImage } from "./control.js";
 
 export default class ImageEditor {
 	// Image editor can only handle one canvas
@@ -22,8 +22,9 @@ export default class ImageEditor {
 		// Set up canvas and context
 		this.canvas = canvas;
 		this.ctx = canvas.getContext("2d");
-		// Handle mouse move image on canvas
+		// Handle move image controls on canvas
 		handleMouseMoveImage(canvas, window, this);
+		handleTouchMoveImage(canvas, window, this);
 	}
 
 	loadImageFile(imageFile) {

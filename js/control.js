@@ -27,3 +27,35 @@ export function handleMouseMoveImage(target, container, editor) {
 		editor.endMoveImage(offsetX, offsetY);
 	});
 }
+
+export function handleTouchMoveImage(target, container, editor) {
+	// Handle user with touch input to move image
+	let isTouching = false;
+	let originX;
+	let originY;
+	let offsetX;
+	let offsetY;
+
+	target.addEventListener("touchstart", (event) => {
+		isTouching = true;
+		originX = event.touches[0].screenX;
+		originY = event.touches[0].screenY;
+		console.log(originX, originY);
+	});
+
+	container.addEventListener("touchmove", (event) => {
+		event.preventDefault();
+		if (!isTouching) return;
+		offsetX = event.touches[0].screenX - originX;
+		offsetY = event.touches[0].screenY - originY;
+		editor.moveImage(offsetX, offsetY);
+	});
+
+	container.addEventListener("touchend", (event) => {
+		if (!isTouching) return;
+		isTouching = false;
+		originX = null;
+		originY = null;
+		editor.endMoveImage(offsetX, offsetY);
+	});
+}
